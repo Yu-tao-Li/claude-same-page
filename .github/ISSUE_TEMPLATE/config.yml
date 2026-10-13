@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security issue
+    url: https://github.com/Yu-tao-Li/claude-samepage/security/advisories/new
+    about: Report vulnerabilities privately; never include secrets in a public issue.

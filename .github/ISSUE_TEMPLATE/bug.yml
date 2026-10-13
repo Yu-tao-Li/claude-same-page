@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a reproducible problem using synthetic or redacted details.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not attach credentials, account emails, real transcripts, or private memory. Redact paths in doctor output."
+  - type: input
+    id: versions
+    attributes:
+      label: Versions and platform
+      placeholder: Samepage 0.1.0; Windows 11; Node 24; Claude Code 2.x
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps and expected behavior
+      description: Use synthetic paths and profile names.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and redacted doctor output
+    validations:
+      required: true
