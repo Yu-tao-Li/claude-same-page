@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-10-14
+
+- Language selection and Chinese/English summaries now appear first.
+- The main README contains full Chinese documentation followed by full English documentation; standalone guides are available in both languages.
+- The primary install command uses the tested release tarball instead of a Git install that failed in the origin machine's npm environment.
+- CI now checks that the packed package installs and its executable runs.
+
 ## 0.1.0 — 2026-10-14
 
 First public release, based on a working Windows three-account Claude Code layout.

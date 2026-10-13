@@ -1,20 +1,46 @@
 {
   "name": "claude-samepage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Switch Claude Code accounts. Keep your conversations and project memory.",
   "type": "module",
-  "engines": { "node": ">=22" },
-  "bin": { "csp": "bin/claude-samepage.mjs", "claude-samepage": "bin/claude-samepage.mjs" },
-  "files": ["bin/", "src/", "README.md", "README.zh-CN.md", "LICENSE", "docs/"],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "csp": "bin/claude-samepage.mjs",
+    "claude-samepage": "bin/claude-samepage.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "README.zh-CN.md",
+    "README.en.md",
+    "LICENSE",
+    "docs/"
+  ],
   "scripts": {
     "test": "node --test",
     "audit:public": "node scripts/audit-public.mjs",
-    "prepack": "npm test && npm run audit:public"
+    "prepack": "npm test && npm run audit:public",
+    "check:install": "node scripts/check-install.mjs"
   },
-  "repository": { "type": "git", "url": "https://github.com/Yu-tao-Li/claude-samepage.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yu-tao-Li/claude-samepage.git"
+  },
   "homepage": "https://github.com/Yu-tao-Li/claude-samepage#readme",
-  "bugs": { "url": "https://github.com/Yu-tao-Li/claude-samepage/issues" },
-  "keywords": ["claude-code", "multi-account", "session", "memory", "windows", "profiles"],
+  "bugs": {
+    "url": "https://github.com/Yu-tao-Li/claude-samepage/issues"
+  },
+  "keywords": [
+    "claude-code",
+    "multi-account",
+    "session",
+    "memory",
+    "windows",
+    "profiles"
+  ],
   "license": "MIT",
   "author": "Yu-tao-Li"
 }

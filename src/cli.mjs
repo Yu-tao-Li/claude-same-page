@@ -47,7 +47,7 @@ function doctor(state) {
 export async function main(argv) {
   const [command, ...args] = argv;
   if (!command || ['help', '--help', '-h'].includes(command)) { console.log(help); return; }
-  if (['--version', 'version'].includes(command)) { console.log('0.1.0'); return; }
+  if (['--version', 'version'].includes(command)) { console.log('0.1.1'); return; }
   if (command === 'init') {
     const flags = options(args, ['--workspace', '--shared-projects']);
     const state = init({ workspace: flags['--workspace'], sharedProjects: flags['--shared-projects'] });

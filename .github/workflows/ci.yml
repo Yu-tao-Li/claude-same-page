@@ -1,5 +1,8 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -18,3 +21,4 @@ jobs:
       - run: npm test
       - run: node scripts/audit-public.mjs --tracked
       - run: npm pack --dry-run --ignore-scripts
+      - run: npm run check:install

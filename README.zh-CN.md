@@ -1,6 +1,12 @@
+[中文](README.zh-CN.md) | [English](README.en.md) | [中英双语 / Bilingual](README.md)
+
+**中文摘要：** Claude Samepage 让多个 Claude Code 账号保留各自登录，并共享本机的对话记录与项目 memory。关闭当前会话后，使用 `csp continue work` 从另一个账号接着工作。Windows 使用 junction，工具零运行时依赖，不读取或复制凭证。
+
+**English summary:** Claude Samepage keeps Claude Code account logins independent while sharing local conversations and project memory. Close the current session, then use `csp continue work` to pick up from another profile. Windows-friendly, zero runtime dependencies, and no credential reads or copies.
+
 <p align="center"><img src="assets/hero.svg" alt="Claude Samepage：切换账号，继续同一段工作" width="100%" /></p>
 
-<p align="center"><a href="README.md">English</a> · <a href="https://github.com/Yu-tao-Li/claude-samepage/actions/workflows/ci.yml">CI</a> · MIT · 零运行时依赖 · Node.js 22+</p>
+<p align="center"><a href="README.en.md">English</a> · <a href="https://github.com/Yu-tao-Li/claude-samepage/actions/workflows/ci.yml">CI</a> · MIT · 零运行时依赖 · Node.js 22+</p>
 
 <h3 align="center">账号换了，对话和项目记忆接着用。</h3>
 
@@ -33,10 +39,10 @@ csp continue work         → 在同一工作目录继续最近的会话
 
 ## 快速开始
 
-先安装 **Node.js 22+**、Git 和 [Claude Code](https://code.claude.com/docs/en/setup)，确认 `claude` 在 PATH 中可用。下面的命令适用于 PowerShell、Bash 和 Zsh。当前从 GitHub 安装，尚未发布到 npm registry。
+先安装 **Node.js 22+** 和 [Claude Code](https://code.claude.com/docs/en/setup)，确认 `claude` 在 PATH 中可用。下面的命令适用于 PowerShell、Bash 和 Zsh。以下命令安装已打包的 GitHub Release，尚未发布到 npm registry。
 
 ```sh
-npm install -g git+https://github.com/Yu-tao-Li/claude-samepage.git#v0.1.0
+npm install -g https://github.com/Yu-tao-Li/claude-samepage/releases/download/v0.1.1/claude-samepage-0.1.1.tgz
 csp init
 csp add personal
 csp add work
