@@ -8,7 +8,7 @@ The launcher does not read or copy credential files, inspect account identities,
 
 Do not commit any Claude profile, the Samepage registry, credentials, JSONL transcript, or real memory directory. The ignore rules are one layer; `npm run audit:public` checks common credential patterns and private path names without printing matched values. It is a heuristic, not proof that every possible secret has been detected. Inspect the actual commit and package file lists too.
 
-Only generated synthetic data appears in tests and visual assets. Publishable binary assets must be visually reviewed. Use different shared stores for data that must remain separate.
+Use `node scripts/audit-public.mjs --tracked` to audit the Git file list, and `node scripts/audit-public.mjs --history` to inspect text files in all reachable commits, including files removed from the current tree. Only generated synthetic data appears in tests and visual assets. Publishable binary assets must be visually reviewed. Use different shared stores for data that must remain separate.
 
 ## Report a vulnerability
 
