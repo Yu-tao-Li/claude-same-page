@@ -200,3 +200,120 @@ test('profiles and workspaces cannot be embedded in the shared store', () => {
   assert.equal(result.status, 1);
   assert.equal(fs.existsSync(path.join(box.state().sharedProjects, 'bad-profile')), false);
 });
+
+test('usage stays offline, keeps account caches independent, and preserves values above 100', () => {
+  const box = sandbox(); box.call('add', 'one'); box.call('add', 'two');
+  const resets_at = Math.floor(Date.now() / 1000) + 3600;
+  const files = ['one', 'two'].map(name => path.join(box.state().profiles[name].configDir, 'statusline-usage.json'));
+  fs.writeFileSync(files[0], JSON.stringify({ five_hour: { used_percentage: 105, resets_at }, seven_day: { used_percentage: 39, resets_at } }));
+  fs.writeFileSync(files[1], JSON.stringify({ five_hour: { used_percentage: 2, resets_at }, seven_day: { used_percentage: 0, resets_at } }));
+  const before = files.map(file => ({ content: fs.readFileSync(file, 'utf8'), mtime: fs.statSync(file).mtimeMs }));
+  box.env.CSP_CLAUDE_BIN = path.join(box.dir, 'no-such-claude');
+  box.env.ANTHROPIC_API_KEY = 'synthetic-private-value';
+  const result = box.call('usage', '--json');
+  assert.equal(result.status, 0);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.offline, true);
+  assert.deepEqual(report.profiles.map(row => row.windows.five_hour.used_percentage), [105, 2]);
+  assert.equal(report.profiles[0].windows.five_hour.reset_passed, false);
+  assert.equal(JSON.parse(box.call('usage', 'two', '--json').stdout).profiles.length, 1);
+  assert.match(box.call('usage', 'one').stdout, /105% used/);
+  assert.deepEqual(files.map(file => ({ content: fs.readFileSync(file, 'utf8'), mtime: fs.statSync(file).mtimeMs })), before);
+  assert.equal(fs.existsSync(path.join(box.state().sharedProjects, '.samepage-run.lock')), false);
+});
+
+test('usage never prints unrelated fields or malformed private content', () => {
+  const box = sandbox(); box.call('add', 'one');
+  const config = box.state().profiles.one.configDir;
+  const file = path.join(config, 'statusline-usage.json');
+  const privateValue = 'synthetic-private-cache-field';
+  fs.writeFileSync(path.join(config, '.credentials.json'), 'synthetic-unparseable-private-credentials');
+  fs.writeFileSync(file, JSON.stringify({ account: privateValue, five_hour: { used_percentage: 9, resets_at: 1, token: privateValue } }));
+  const result = box.call('usage', '--json');
+  assert.equal(result.status, 0);
+  assert.doesNotMatch(result.stdout + result.stderr, /synthetic-private|credentials/);
+  assert.equal(JSON.parse(result.stdout).profiles[0].windows.five_hour.reset_passed, true);
+  fs.writeFileSync(file, `{"five_hour": "${privateValue}`);
+  const malformed = box.call('usage', '--json');
+  assert.equal(malformed.status, 1);
+  assert.equal(JSON.parse(malformed.stdout).profiles[0].status, 'invalid');
+  assert.doesNotMatch(malformed.stdout + malformed.stderr, /synthetic-private/);
+});
+
+test('usage handles missing, empty, partial, oversized and invalid caches without overwriting', () => {
+  const box = sandbox(); box.call('add', 'one');
+  const file = path.join(box.state().profiles.one.configDir, 'statusline-usage.json');
+  assert.equal(JSON.parse(box.call('usage', '--json').stdout).profiles[0].status, 'missing');
+  assert.equal(fs.existsSync(file), false);
+  const cases = [ ['{}', 'empty'], ['null', 'invalid'], ['[]', 'invalid'],
+    [JSON.stringify({ five_hour: { used_percentage: '9', resets_at: 1 } }), 'invalid'],
+    [JSON.stringify({ five_hour: { used_percentage: 9, resets_at: 1 }, seven_day: { used_percentage: -1, resets_at: 1 } }), 'partial'],
+    [' '.repeat(64 * 1024 + 1), 'oversized'] ];
+  for (const [content, status] of cases) {
+    fs.writeFileSync(file, content);
+    const result = box.call('usage', '--json');
+    assert.equal(result.status, 1);
+    assert.equal(JSON.parse(result.stdout).profiles[0].status, status);
+    assert.equal(fs.readFileSync(file, 'utf8'), content);
+  }
+  assert.equal(box.call('usage', 'absent').status, 1);
+  assert.equal(box.call('usage', '--json', '--json').status, 1);
+});
+
+test('usage refuses profile roots and cache files that are directory links', () => {
+  const box = sandbox(); box.call('add', 'one');
+  const config = box.state().profiles.one.configDir;
+  const file = path.join(config, 'statusline-usage.json');
+  fs.symlinkSync(box.workspace, file, process.platform === 'win32' ? 'junction' : 'dir');
+  assert.equal(JSON.parse(box.call('usage', '--json').stdout).profiles[0].status, 'unsafe');
+  const linkedRoot = path.join(box.dir, 'linked-root');
+  fs.symlinkSync(config, linkedRoot, process.platform === 'win32' ? 'junction' : 'dir');
+  const registry = box.state(); registry.profiles.one.configDir = linkedRoot;
+  fs.writeFileSync(path.join(box.env.CSP_HOME, 'config.json'), JSON.stringify(registry));
+  assert.equal(JSON.parse(box.call('usage', '--json').stdout).profiles[0].status, 'unsafe');
+});
+
+function statuslineFixture() {
+  const box = sandbox(); box.call('add', 'one'); box.call('add', 'two');
+  const run = (name, input) => {
+    const script = path.join(box.state().profiles[name].configDir, 'statusline-usage.mjs');
+    if (!fs.existsSync(script)) fs.copyFileSync(path.join(root, 'examples', 'statusline-usage.mjs'), script);
+    return spawnSync(process.execPath, [script], { env: box.env, input: JSON.stringify(input), encoding: 'utf8' });
+  };
+  return { ...box, run };
+}
+
+test('the documented status line generates whitelisted caches only after rate_limits arrives', () => {
+  const box = statuslineFixture();
+  const file = name => path.join(box.state().profiles[name].configDir, 'statusline-usage.json');
+  assert.match(box.run('one', { model: { display_name: 'synthetic-model' } }).stdout, /waiting/);
+  assert.equal(fs.existsSync(file('one')), false);
+  const resets_at = Math.floor(Date.now() / 1000) + 3600;
+  box.run('one', { rate_limits: { five_hour: { used_percentage: 105, resets_at, ignored: 'synthetic-private-extra' } }, ignored: 'synthetic-private-extra' });
+  box.run('two', { rate_limits: { five_hour: { used_percentage: 2, resets_at }, seven_day: { used_percentage: 0, resets_at } } });
+  assert.deepEqual(JSON.parse(fs.readFileSync(file('one'), 'utf8')), { five_hour: { used_percentage: 105, resets_at } });
+  const before = fs.statSync(file('one')).mtimeMs;
+  assert.match(box.run('one', {}).stdout, /~105%/);
+  assert.equal(fs.statSync(file('one')).mtimeMs, before);
+  const report = JSON.parse(box.call('usage', '--json').stdout);
+  assert.deepEqual(report.profiles.map(row => row.windows.five_hour.used_percentage), [105, 2]);
+  assert.doesNotMatch(fs.readFileSync(file('one'), 'utf8'), /synthetic-private/);
+});
+
+test('status line preserves malformed caches and newer observations, then accepts a new reset window', () => {
+  const box = statuslineFixture();
+  const file = path.join(box.state().profiles.one.configDir, 'statusline-usage.json');
+  const resets_at = Math.floor(Date.now() / 1000) + 3600;
+  box.run('one', { rate_limits: { five_hour: { used_percentage: 90, resets_at }, seven_day: { used_percentage: 40, resets_at } } });
+  box.run('one', { rate_limits: { five_hour: { used_percentage: 80, resets_at } } });
+  assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).five_hour.used_percentage, 90);
+  assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).seven_day.used_percentage, 40);
+  box.run('one', { rate_limits: { five_hour: { used_percentage: 1, resets_at: resets_at + 3600 } } });
+  assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).five_hour.used_percentage, 1);
+  const malformed = 'invalid synthetic-private-cache';
+  fs.writeFileSync(file, malformed);
+  const result = box.run('one', { rate_limits: { five_hour: { used_percentage: 9, resets_at } } });
+  assert.match(result.stdout, /unavailable/);
+  assert.doesNotMatch(result.stdout + result.stderr, /synthetic-private/);
+  assert.equal(fs.readFileSync(file, 'utf8'), malformed);
+});

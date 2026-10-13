@@ -2,14 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { init, add, home, load, mutate, save, selectProfile, verifyProfile, runLockPath, exists, unlockStale } from './store.mjs';
 import { launch, resolveClaude } from './launcher.mjs';
+import { usageReport, formatUsage } from './usage.mjs';
 
-const help = `Claude Samepage · switch accounts, keep the conversation
+const help = `Claude Same Page · switch accounts, keep the conversation
 
   csp init [--workspace DIR] [--shared-projects DIR]
   csp add NAME [--config DIR]     Create or adopt a profile
   csp login NAME                 Sign in with Claude's own login
   csp use NAME                   Set the default profile
   csp list                       Show profiles (no credential reads)
+  csp usage [NAME] [--json]       Read per-profile usage caches offline
   csp run [NAME] -- [ARGS]        Launch; forward Claude arguments
   csp continue [NAME] -- [ARGS]   Continue this workspace's latest session
   csp resume [NAME] [SESSION]     Open picker or resume an exact session
@@ -17,7 +19,7 @@ const help = `Claude Samepage · switch accounts, keep the conversation
   csp unlock --stale             Remove a verified dead-process lock
 
 Close the old Claude session before switching. Shared data is local.
-Node >=22 · no runtime dependencies · https://github.com/Yu-tao-Li/claude-samepage`;
+Node >=22 · no runtime dependencies · https://github.com/Yu-tao-Li/claude-same-page`;
 
 function options(args, names) {
   const output = {};
@@ -47,11 +49,11 @@ function doctor(state) {
 export async function main(argv) {
   const [command, ...args] = argv;
   if (!command || ['help', '--help', '-h'].includes(command)) { console.log(help); return; }
-  if (['--version', 'version'].includes(command)) { console.log('0.1.1'); return; }
+  if (['--version', 'version'].includes(command)) { console.log('0.2.0'); return; }
   if (command === 'init') {
     const flags = options(args, ['--workspace', '--shared-projects']);
     const state = init({ workspace: flags['--workspace'], sharedProjects: flags['--shared-projects'] });
-    console.log(`Initialized Samepage.\nShared projects: ${state.sharedProjects}\nNext: csp add personal`); return;
+    console.log(`Initialized Same Page.\nShared projects: ${state.sharedProjects}\nNext: csp add personal`); return;
   }
   if (command === 'add') {
     const [name, ...rest] = args;
@@ -65,6 +67,15 @@ export async function main(argv) {
     console.log(`Default profile: ${args[0]}`); return;
   }
   const state = load();
+  if (command === 'usage') {
+    const names = args.filter(value => value !== '--json');
+    if (names.length > 1 || names.some(value => value.startsWith('-')) || args.filter(value => value === '--json').length > 1) {
+      throw new Error('Usage: csp usage [NAME] [--json]');
+    }
+    const report = usageReport(state, names[0]);
+    console.log(args.includes('--json') ? JSON.stringify(report, null, 2) : formatUsage(report));
+    process.exitCode = report.profiles.every(row => row.status === 'ok') ? 0 : 1; return;
+  }
   if (command === 'list') {
     if (args.length) throw new Error('Usage: csp list');
     for (const [name, profile] of Object.entries(state.profiles)) console.log(`${name === state.defaultProfile ? '*' : ' '} ${name}\t${profile.configDir}`);

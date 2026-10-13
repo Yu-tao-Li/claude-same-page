@@ -8,7 +8,7 @@ body:
     id: versions
     attributes:
       label: Versions and platform
-      placeholder: Samepage 0.1.0; Windows 11; Node 24; Claude Code 2.x
+      placeholder: Same Page 0.2.0; Windows 11; Node 24; Claude Code 2.x
     validations:
       required: true
   - type: textarea

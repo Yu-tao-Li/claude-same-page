@@ -1,6 +1,6 @@
 # Contributing
 
-Keep Samepage small, predictable, and careful with local data. A report from a new operating system is as useful as a new feature.
+Keep Same Page small, predictable, and careful with local data. A report from a new operating system is as useful as a new feature.
 
 ## Run locally
 

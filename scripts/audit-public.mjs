@@ -27,7 +27,7 @@ const rules = [
 ];
 let findings = 0;
 for (const { file, commit } of files) {
-  if (/(?:^|[\\/])(?:\.credentials\.json|\.claude\.json|history\.jsonl|\.env(?:\..*)?|[^/\\]+\.pem|[^/\\]+\.key)$/.test(file) || /(?:^|[\\/])(?:profiles|shared)[\\/]/.test(file)) {
+  if (/(?:^|[\\/])(?:\.credentials\.json|\.claude\.json|history\.jsonl|statusline-usage\.json|\.env(?:\..*)?|[^/\\]+\.pem|[^/\\]+\.key)$/.test(file) || /(?:^|[\\/])(?:profiles|shared)[\\/]/.test(file)) {
     console.error(`credential-path: ${file}`); findings++; continue;
   }
   if (/\.(png|gif|jpg|webp|ico|zip|tgz)$/.test(file)) continue;

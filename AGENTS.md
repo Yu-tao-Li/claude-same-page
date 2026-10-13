@@ -1,6 +1,6 @@
 # Project rules
 
-Claude Samepage is a local Claude Code profile launcher. Preserve independent authentication while linking only `projects/` for shared transcripts and project auto memory.
+Claude Same Page is a local Claude Code profile launcher. Preserve independent authentication while linking only `projects/` for shared transcripts and project auto memory.
 
 - Node.js >= 22, ESM, no runtime dependencies. Run `npm test` and `npm run audit:public` before publishing.
 - Never read, copy, log, commit, or upload real credentials, account identity files, transcripts, or memory. Fixtures must be synthetic.

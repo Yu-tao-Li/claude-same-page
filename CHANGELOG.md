@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — 2026-10-14
+
+- Renamed the project to **Claude Same Page**, with repository/package name `claude-same-page`. `csp`, the legacy command alias, existing registry paths, and writer-lock names remain compatible.
+- Added `csp usage [NAME] [--json]` for offline, read-only queries of independent per-profile usage caches. Shows raw percentages, reset times, cache age, and passed reset times without reading credentials or starting Claude.
+- Added a packaged standalone status-line example that receives Claude's usage fields through stdin and writes only the profile's usage cache. No network requests or credential reads.
+- Added Chinese and English cache prerequisites, installation/configuration steps, first-response instructions, schema, troubleshooting, and upgrade instructions.
+- Added six synthetic tests for cache privacy, independent profiles, preservation, data validation, and the documented producer workflow. Real account caches are excluded from publication.
+
 ## 0.1.1 — 2026-10-14
 
 - Language selection and Chinese/English summaries now appear first.

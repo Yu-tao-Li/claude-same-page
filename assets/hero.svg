@@ -3,7 +3,7 @@
 <rect width="1280" height="640" rx="24" fill="url(#bg)"/><rect width="1280" height="640" rx="24" fill="url(#grid)"/><ellipse cx="1060" cy="290" rx="470" ry="450" fill="url(#glow)"/>
 <g font-family="Segoe UI,Arial,sans-serif">
 <rect x="60" y="52" width="44" height="44" rx="13" fill="#71e8b2"/><path d="M71 67h15a5 5 0 0 1 0 10h-8a5 5 0 0 0 0 10h15" fill="none" stroke="#0d1721" stroke-width="4" stroke-linecap="round"/>
-<text x="120" y="83" fill="#eaf1f7" font-size="24" font-weight="650" letter-spacing=".4">CLAUDE SAMEPAGE</text><text x="1196" y="82" text-anchor="end" fill="#7f91a5" font-size="16">LOCAL-FIRST  /  v0.1</text>
+<text x="120" y="83" fill="#eaf1f7" font-size="24" font-weight="650" letter-spacing=".4">CLAUDE SAME PAGE</text><text x="1196" y="82" text-anchor="end" fill="#7f91a5" font-size="16">LOCAL-FIRST  /  v0.2</text>
 <text x="60" y="193" fill="#f3f7fb" font-size="58" font-weight="700" letter-spacing="-1.6">Switch accounts.</text>
 <text x="60" y="268" fill="#71e8b2" font-size="58" font-weight="700" letter-spacing="-1.6">Stay on the</text>
 <text x="60" y="343" fill="#71e8b2" font-size="58" font-weight="700" letter-spacing="-1.6">same page.</text>
@@ -18,5 +18,5 @@
 <rect x="38" y="217" width="383" height="174" rx="18" fill="#14262e" stroke="#71e8b2" stroke-opacity=".6"/><text x="67" y="252" fill="#71e8b2" font-size="13" letter-spacing="2">ONE SHARED LOCAL STORE</text>
 <path d="M68 278h23l7 9h47v50H68z" fill="#71e8b2" fill-opacity=".12" stroke="#71e8b2" stroke-width="2"/><text x="167" y="298" fill="#f0f5f8" font-size="23" font-weight="600">Conversations</text><text x="167" y="330" fill="#a8b8c9" font-size="20">+ Project memory</text><text x="67" y="367" fill="#688b86" font-family="Consolas,monospace" font-size="16">projects/&lt;project&gt;/</text>
 </g>
-<path d="M60 557h1160" stroke="#213042"/><text x="60" y="599" fill="#96aabd" font-size="17">Windows friendly</text><circle cx="239" cy="593" r="3" fill="#41675e"/><text x="260" y="599" fill="#96aabd" font-size="17">Zero runtime dependencies</text><circle cx="500" cy="593" r="3" fill="#41675e"/><text x="521" y="599" fill="#96aabd" font-size="17">MIT open source</text><text x="1216" y="599" text-anchor="end" fill="#71e8b2" font-size="17">claude-samepage</text>
+<path d="M60 557h1160" stroke="#213042"/><text x="60" y="599" fill="#96aabd" font-size="17">Windows friendly</text><circle cx="239" cy="593" r="3" fill="#41675e"/><text x="260" y="599" fill="#96aabd" font-size="17">Zero runtime dependencies</text><circle cx="500" cy="593" r="3" fill="#41675e"/><text x="521" y="599" fill="#96aabd" font-size="17">MIT open source</text><text x="1216" y="599" text-anchor="end" fill="#71e8b2" font-size="17">claude-same-page</text>
 </g></svg>

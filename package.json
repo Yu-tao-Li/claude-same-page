@@ -1,6 +1,6 @@
 {
-  "name": "claude-samepage",
-  "version": "0.1.1",
+  "name": "claude-same-page",
+  "version": "0.2.0",
   "description": "Switch Claude Code accounts. Keep your conversations and project memory.",
   "type": "module",
   "engines": {
@@ -8,7 +8,8 @@
   },
   "bin": {
     "csp": "bin/claude-samepage.mjs",
-    "claude-samepage": "bin/claude-samepage.mjs"
+    "claude-samepage": "bin/claude-samepage.mjs",
+    "claude-same-page": "bin/claude-samepage.mjs"
   },
   "files": [
     "bin/",
@@ -17,7 +18,8 @@
     "README.zh-CN.md",
     "README.en.md",
     "LICENSE",
-    "docs/"
+    "docs/",
+    "examples/"
   ],
   "scripts": {
     "test": "node --test",
@@ -27,11 +29,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Yu-tao-Li/claude-samepage.git"
+    "url": "https://github.com/Yu-tao-Li/claude-same-page.git"
   },
-  "homepage": "https://github.com/Yu-tao-Li/claude-samepage#readme",
+  "homepage": "https://github.com/Yu-tao-Li/claude-same-page#readme",
   "bugs": {
-    "url": "https://github.com/Yu-tao-Li/claude-samepage/issues"
+    "url": "https://github.com/Yu-tao-Li/claude-same-page/issues"
   },
   "keywords": [
     "claude-code",

@@ -39,7 +39,7 @@ export function load() {
   if (!exists(stateFile())) throw new Error('Run csp init first.');
   const state = JSON.parse(fs.readFileSync(stateFile(), 'utf8'));
   if (state.version !== 1 || !state.profiles || !path.isAbsolute(state.sharedProjects)) {
-    throw new Error('Invalid Samepage configuration. Preserve the file and inspect it.');
+    throw new Error('Invalid Same Page configuration. Preserve the file and inspect it.');
   }
   return state;
 }
@@ -55,7 +55,7 @@ export function acquireLock(file, detail = {}) {
   try { fd = fs.openSync(file, 'wx', 0o600); }
   catch (error) {
     if (error.code !== 'EEXIST') throw error;
-    throw new Error(`Another Samepage operation owns the lock: ${file}. Close that session first. After a crash, inspect csp doctor and use csp unlock --stale.`);
+    throw new Error(`Another Same Page operation owns the lock: ${file}. Close that session first. After a crash, inspect csp doctor and use csp unlock --stale.`);
   }
   function update(fields) {
     Object.assign(record, fields);
@@ -129,7 +129,7 @@ export async function add(name, config) {
     checkLayout(configDir, state);
     const projects = path.join(configDir, 'projects');
     if (exists(projects) && !equalPath(directory(projects), directory(state.sharedProjects))) {
-      throw new Error(`Existing projects directory was preserved: ${projects}. Initialize with that directory as --shared-projects, or use a fresh profile. Samepage never merges or replaces it.`);
+      throw new Error(`Existing projects directory was preserved: ${projects}. Initialize with that directory as --shared-projects, or use a fresh profile. Same Page never merges or replaces it.`);
     }
     fs.mkdirSync(configDir, { recursive: true, mode: 0o700 });
     configDir = directory(configDir);

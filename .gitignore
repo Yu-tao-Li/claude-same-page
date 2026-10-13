@@ -10,6 +10,8 @@ node_modules/
 credentials.json
 .claude.json
 history.jsonl
+statusline-usage.json
+.statusline-usage-*.tmp
 *.jsonl
 profiles/
 shared/
